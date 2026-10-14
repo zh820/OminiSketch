@@ -1,1 +1,1 @@
-D:/plans/OminiSketch/model/skelora/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text
+model/skelora/adapter_model.safetensors filter=lfs diff=lfs merge=lfs -text

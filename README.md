@@ -23,18 +23,6 @@ Project/
   Test/                         划分/校验脚本、备份和报告（非运行依赖）
 ```
 
-搬迁报告、检查脚本和图生成器不属于运行依赖，已移出 Project 到 `D:/plans/projects/result/cleanup_20261014/`。删除 result 不影响本项目代码。
-
-## 运行前提
-
-1. Python 3.12 或更新版本；当前代码使用了新式 f-string 语法。
-2. 安装与显卡驱动匹配的 CUDA PyTorch，以及 requirements.txt 中依赖。依赖安装和真实 GPU 运行尚未在本机验证。
-3. 将兼容的 FLUX Dev 完整组件放到 config.yaml 的 `models.flux_base`，不要用 Schnell 替代。当前本地该目录为空。
-4. 推理 adapter 目录必须有 adapter_model.safetensors、adapter_config.json、training_protocol.json；当前 skelora 三个文件已保留。
-5. 默认训练感知权重为 0.5，需要 config.yaml 的 `models.redux_image_encoder` 指向完整 SigLIP 教师；当前本地目录为空。设 `--perceptual-weight 0` 可不加载教师，但会改变训练损失，不能视为默认方案的等价复现。
-6. split_manifest.json 已按本端实际存在的 4001 例重新分组划分，训练 2801、验证 800、测试 400。同一归一化原图分组不跨分区，旧名单的缺失项已去除；原始数据未删除。
-
-因此 GPU 不是唯一前提；完整模型、运行依赖和匹配的训练划分也必须准备好。
 
 ## 推理
 
@@ -50,7 +38,7 @@ python -B demo.py --port 7863
 python -B infer.py --source "data/001000/001612/source.png" --mask "data/001000/001612/mask.png" --prompt "Put an oven next to the microwave."
 ```
 
-输出到 output 下的新目录：source.png、mask.png、prompt.txt、result.png。种子、步数和 CFG 参数嵌入结果 PNG。推理不使用 Redux，也不在结果端拼接或缩放贴图。
+输出到 output 下的新目录：source.png、mask.png、prompt.txt、result.png。种子、步数和 CFG 参数嵌入结果 PNG。
 
 ## 训练
 

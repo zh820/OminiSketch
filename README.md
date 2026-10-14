@@ -71,7 +71,3 @@ python -B OminiSketch/train/train_lora.py --name new_trial --samples 128
 - [推理端说明及完整图](OminiSketch/core/readme.md)
 - [训练端说明及完整图](OminiSketch/train/readme.md)
 
-两张图上半部分展示输入如何变换，下半部分逐项列出函数/类的引用与被引用关系。它们是当前本地源码的静态分析，不是一次真实 GPU 运行记录。
-
-
-重新划分用于后续新实验。新验证/测试分区可能含旧 LoRA 训练过的样本，不能据此声称旧权重在未见样本上的效果。划分脚本、旧名单备份和校验报告统一放在 Test，运行训练/推理不依赖 Test。

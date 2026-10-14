@@ -1,0 +1,17 @@
+models:
+  flux_base: ../model/flux_dev
+  sketch_lora: ../model/skelora
+  redux_image_encoder: ../model/Redux/image_encoder
+data_dir: ../data
+output_dir: ../output
+data_mask_edit_color: black
+inference:
+  num_steps: 28
+  guidance_scale: 3.5
+  condition_attention_scale: 0.1
+  image_lora: true
+  background_lock: true
+  text_scale: 0.5
+  seed: 42
+  true_cfg_scale: 2.0
+  prompt_suffix: ''

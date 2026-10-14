@@ -52,7 +52,7 @@ python -B OminiSketch/train/train_lora.py --name new_trial --samples 128
 
 默认 rank16、lr=1e-4、4轮、累积1、gate0.1、文字 LoRA 开启、感知权重0.5/grid4。需要暖启动时显式传 --initial-lora，否则新初始化 LoRA。新产物写入 model/skelora/<name>/，新配置写入 train/configs/，不覆盖同名实验。
 
-训练后将 config.yaml 的 models.sketch_lora 指向选中的 adapter 目录，再重新启动推理进程。训练集用于更新参数，验证子集用于选优，测试集不参与训练和选优。
+训练后将 config.yaml 的 models.sketch_lora 指向选中的 adapter 目录，再重新启动推理进程。
 
 ## 依赖与数据流
 

@@ -14,19 +14,14 @@ os.environ['GRADIO_ANALYTICS_ENABLED'] = 'False'
 
 def create_demo():
     import gradio as gr
-    from PIL import Image
-    from core.interface import config, prepare_editor
+    from core.interface import prepare_editor
     from core.interface import generate
-    example = None
-    sample = Path(config.data_dir) / '001000/001612/source.png'
-    if sample.is_file():
-        with Image.open(sample) as image:
-            example = image.convert('RGBA').resize((512, 512))
 
     def generate_editor(editor, mask, mode, prompt, steps, cfg, seed, random_seed):
         try:
             source, _, _, region, prompt = prepare_editor(editor, mask, mode, prompt)
-            return generate(source, region, prompt, steps, cfg, seed, random_seed)
+            result, _, _ = generate(source, region, prompt, steps, cfg, seed, random_seed)
+            return result
         except (ValueError, TypeError, OverflowError, FileNotFoundError, RuntimeError) as error:
             raise gr.Error(str(error)) from error
 
@@ -39,10 +34,10 @@ def create_demo():
 
             with gr.Column(min_width=320):
 
-                editor = gr.ImageEditor(value=example, type='pil', image_mode='RGBA', sources=['upload', 'clipboard'], transforms=[], format='png', label='原图与涂鸦', height=512, brush=gr.Brush(default_size=35, colors=['#ef4444'], default_color='#ef4444', color_mode='fixed'))
+                editor = gr.ImageEditor(type='pil', image_mode='RGBA', sources=['upload', 'clipboard'], transforms=[], format='png', label='原图与涂鸦', height=512, brush=gr.Brush(default_size=35, colors=['#ef4444'], default_color='#ef4444', color_mode='fixed'))
                 mode = gr.Radio(['绘制区域', '上传区域'], type='index', value='绘制区域', label='区域来源')
                 mask = gr.Image(type='pil', image_mode='RGB', format='png', visible=False, sources=['upload'], label='区域文件（黑色为编辑区）', height=220)
-                prompt = gr.Textbox(value='Put an oven next to the microwave.', label='编辑指令', lines=2)
+                prompt = gr.Textbox(value='', label='编辑指令', lines=2)
                 
                 with gr.Row():
                     steps = gr.Slider(10, 40, value=28, step=1, label='步数')
@@ -57,17 +52,14 @@ def create_demo():
             with gr.Column(min_width=320):
                 
                 output = gr.Image(label='生成结果', interactive=False, format='png', height=512)
-                preview = gr.Image(label='实际编辑区域', interactive=False, format='png', height=220)
                 
-                with gr.Accordion('本次参数', open=False):
-                    record = gr.JSON(label=None)
         
         mode.change(lambda value: gr.update(visible=value == 1), mode, mask, queue=False)
         editor.upload(lambda: None, outputs=mask, queue=False)
         editor.clear(lambda: None, outputs=mask, queue=False)
         random_seed.change(lambda value: gr.update(interactive=not value), random_seed, seed, queue=False)
         
-        button.click(generate_editor, [editor, mask, mode, prompt, steps, cfg, seed, random_seed], [output, preview, record], api_name='generate', concurrency_limit=1, trigger_mode='once')
+        button.click(generate_editor, [editor, mask, mode, prompt, steps, cfg, seed, random_seed], [output], api_name='generate', concurrency_limit=1, trigger_mode='once')
     
     return demo
 
